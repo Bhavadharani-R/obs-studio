@@ -26,8 +26,10 @@ LIBVLC_MEDIA_ADD_OPTION libvlc_media_add_option_;
 LIBVLC_MEDIA_RELEASE libvlc_media_release_;
 LIBVLC_MEDIA_RETAIN libvlc_media_retain_;
 LIBVLC_MEDIA_GET_META libvlc_media_get_meta_;
-LIBVLC_MEDIA_TRACKS_GET libvlc_media_tracks_get_;
-LIBVLC_MEDIA_TRACKS_RELEASE libvlc_media_tracks_release_;
+LIBVLC_MEDIA_TRACKS_GET libvlc_media_get_tracklist_;
+LIBVLC_MEDIA_TRACKS_RELEASE libvlc_media_track_release_;
+LIBVLC_MEDIA_TRACKLIST_COUNT libvlc_media_tracklist_count_;
+LIBVLC_MEDIA_TRACKLIST_AT libvlc_media_tracklist_at_;
 
 /* libvlc media player */
 LIBVLC_MEDIA_PLAYER_NEW libvlc_media_player_new_;
@@ -38,7 +40,7 @@ LIBVLC_VIDEO_SET_FORMAT_CALLBACKS libvlc_video_set_format_callbacks_;
 LIBVLC_AUDIO_SET_CALLBACKS libvlc_audio_set_callbacks_;
 LIBVLC_AUDIO_SET_FORMAT_CALLBACKS libvlc_audio_set_format_callbacks_;
 LIBVLC_MEDIA_PLAYER_PLAY libvlc_media_player_play_;
-LIBVLC_MEDIA_PLAYER_STOP libvlc_media_player_stop_;
+LIBVLC_MEDIA_PLAYER_STOP libvlc_media_player_stop_async_;
 LIBVLC_MEDIA_PLAYER_GET_TIME libvlc_media_player_get_time_;
 LIBVLC_MEDIA_PLAYER_SET_TIME libvlc_media_player_set_time_;
 LIBVLC_VIDEO_GET_SIZE libvlc_video_get_size_;
@@ -60,7 +62,7 @@ LIBVLC_MEDIA_LIST_PLAYER_NEW libvlc_media_list_player_new_;
 LIBVLC_MEDIA_LIST_PLAYER_RELEASE libvlc_media_list_player_release_;
 LIBVLC_MEDIA_LIST_PLAYER_PLAY libvlc_media_list_player_play_;
 LIBVLC_MEDIA_LIST_PLAYER_PAUSE libvlc_media_list_player_pause_;
-LIBVLC_MEDIA_LIST_PLAYER_STOP libvlc_media_list_player_stop_;
+LIBVLC_MEDIA_LIST_PLAYER_STOP libvlc_media_list_player_stop_async_;
 LIBVLC_MEDIA_LIST_PLAYER_SET_MEDIA_PLAYER
 libvlc_media_list_player_set_media_player_;
 LIBVLC_MEDIA_LIST_PLAYER_SET_MEDIA_LIST libvlc_media_list_player_set_media_list_;
@@ -106,8 +108,10 @@ static bool load_vlc_funcs(void)
 	LOAD_VLC_FUNC(libvlc_media_release);
 	LOAD_VLC_FUNC(libvlc_media_retain);
 	LOAD_VLC_FUNC(libvlc_media_get_meta);
-	LOAD_VLC_FUNC(libvlc_media_tracks_get);
-	LOAD_VLC_FUNC(libvlc_media_tracks_release);
+	LOAD_VLC_FUNC(libvlc_media_get_tracklist);
+	LOAD_VLC_FUNC(libvlc_media_track_release);
+	LOAD_VLC_FUNC(libvlc_media_tracklist_count);
+	LOAD_VLC_FUNC(libvlc_media_tracklist_at);
 
 	/* libvlc media player */
 	LOAD_VLC_FUNC(libvlc_media_player_new);
@@ -118,7 +122,7 @@ static bool load_vlc_funcs(void)
 	LOAD_VLC_FUNC(libvlc_audio_set_callbacks);
 	LOAD_VLC_FUNC(libvlc_audio_set_format_callbacks);
 	LOAD_VLC_FUNC(libvlc_media_player_play);
-	LOAD_VLC_FUNC(libvlc_media_player_stop);
+	LOAD_VLC_FUNC(libvlc_media_player_stop_async);
 	LOAD_VLC_FUNC(libvlc_media_player_get_time);
 	LOAD_VLC_FUNC(libvlc_media_player_set_time);
 	LOAD_VLC_FUNC(libvlc_video_get_size);
@@ -140,7 +144,7 @@ static bool load_vlc_funcs(void)
 	LOAD_VLC_FUNC(libvlc_media_list_player_release);
 	LOAD_VLC_FUNC(libvlc_media_list_player_play);
 	LOAD_VLC_FUNC(libvlc_media_list_player_pause);
-	LOAD_VLC_FUNC(libvlc_media_list_player_stop);
+	LOAD_VLC_FUNC(libvlc_media_list_player_stop_async);
 	LOAD_VLC_FUNC(libvlc_media_list_player_set_media_player);
 	LOAD_VLC_FUNC(libvlc_media_list_player_set_media_list);
 	LOAD_VLC_FUNC(libvlc_media_list_player_event_manager);

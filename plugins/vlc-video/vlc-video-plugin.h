@@ -11,6 +11,7 @@ typedef SSIZE_T ssize_t;
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_player.h>
 #include <vlc/libvlc_media_list_player.h>
+#include <vlc/libvlc_media_track.h>
 
 extern libvlc_instance_t *libvlc;
 extern uint64_t time_start;
@@ -28,7 +29,7 @@ typedef int (*LIBVLC_EVENT_ATTACH)(libvlc_event_manager_t *p_event_manager,
 				   void *user_data);
 
 /* libvlc media */
-typedef libvlc_media_t *(*LIBVLC_MEDIA_NEW_PATH)(libvlc_instance_t *p_instance,
+typedef libvlc_media_t *(*LIBVLC_MEDIA_NEW_PATH)(
 						 const char *path);
 typedef libvlc_media_t *(*LIBVLC_MEDIA_NEW_LOCATION)(
 	libvlc_instance_t *p_instance, const char *location);
@@ -38,10 +39,13 @@ typedef void (*LIBVLC_MEDIA_RETAIN)(libvlc_media_t *p_md);
 typedef void (*LIBVLC_MEDIA_RELEASE)(libvlc_media_t *p_md);
 typedef char *(*LIBVLC_MEDIA_GET_META)(libvlc_media_t *p_md,
 				       libvlc_meta_t e_meta);
-typedef unsigned (*LIBVLC_MEDIA_TRACKS_GET)(libvlc_media_t *p_md,
-					    libvlc_media_track_t ***pp_es);
-typedef void (*LIBVLC_MEDIA_TRACKS_RELEASE)(libvlc_media_track_t **p_tracks,
-					    unsigned i_count);
+typedef libvlc_media_tracklist_t *(*LIBVLC_MEDIA_TRACKS_GET)(
+	libvlc_media_t *p_md,
+					    libvlc_track_type_t type);
+typedef void (*LIBVLC_MEDIA_TRACKS_RELEASE)(libvlc_media_track_t *tracks
+					 );
+typedef unsigned (*LIBVLC_MEDIA_TRACKLIST_COUNT)(const libvlc_media_tracklist_t *list);
+typedef libvlc_media_track_t *(*LIBVLC_MEDIA_TRACKLIST_AT)(libvlc_media_tracklist_t *list, size_t index);
 
 /* libvlc media player */
 typedef libvlc_media_player_t *(*LIBVLC_MEDIA_PLAYER_NEW)(
@@ -129,8 +133,10 @@ extern LIBVLC_MEDIA_ADD_OPTION libvlc_media_add_option_;
 extern LIBVLC_MEDIA_RELEASE libvlc_media_release_;
 extern LIBVLC_MEDIA_RETAIN libvlc_media_retain_;
 extern LIBVLC_MEDIA_GET_META libvlc_media_get_meta_;
-extern LIBVLC_MEDIA_TRACKS_GET libvlc_media_tracks_get_;
-extern LIBVLC_MEDIA_TRACKS_RELEASE libvlc_media_tracks_release_;
+extern LIBVLC_MEDIA_TRACKS_GET libvlc_media_get_tracklist_;
+extern LIBVLC_MEDIA_TRACKS_RELEASE libvlc_media_track_release_;
+extern LIBVLC_MEDIA_TRACKLIST_COUNT libvlc_media_tracklist_count_;
+extern LIBVLC_MEDIA_TRACKLIST_AT libvlc_media_tracklist_at_;
 
 /* libvlc media player */
 extern LIBVLC_MEDIA_PLAYER_NEW libvlc_media_player_new_;
@@ -141,7 +147,7 @@ extern LIBVLC_VIDEO_SET_FORMAT_CALLBACKS libvlc_video_set_format_callbacks_;
 extern LIBVLC_AUDIO_SET_CALLBACKS libvlc_audio_set_callbacks_;
 extern LIBVLC_AUDIO_SET_FORMAT_CALLBACKS libvlc_audio_set_format_callbacks_;
 extern LIBVLC_MEDIA_PLAYER_PLAY libvlc_media_player_play_;
-extern LIBVLC_MEDIA_PLAYER_STOP libvlc_media_player_stop_;
+extern LIBVLC_MEDIA_PLAYER_STOP libvlc_media_player_stop_async_;
 extern LIBVLC_MEDIA_PLAYER_GET_TIME libvlc_media_player_get_time_;
 extern LIBVLC_MEDIA_PLAYER_SET_TIME libvlc_media_player_set_time_;
 extern LIBVLC_VIDEO_GET_SIZE libvlc_video_get_size_;
@@ -163,7 +169,7 @@ extern LIBVLC_MEDIA_LIST_PLAYER_NEW libvlc_media_list_player_new_;
 extern LIBVLC_MEDIA_LIST_PLAYER_RELEASE libvlc_media_list_player_release_;
 extern LIBVLC_MEDIA_LIST_PLAYER_PLAY libvlc_media_list_player_play_;
 extern LIBVLC_MEDIA_LIST_PLAYER_PAUSE libvlc_media_list_player_pause_;
-extern LIBVLC_MEDIA_LIST_PLAYER_STOP libvlc_media_list_player_stop_;
+extern LIBVLC_MEDIA_LIST_PLAYER_STOP libvlc_media_list_player_stop_async_;
 extern LIBVLC_MEDIA_LIST_PLAYER_SET_MEDIA_PLAYER
 	libvlc_media_list_player_set_media_player_;
 extern LIBVLC_MEDIA_LIST_PLAYER_SET_MEDIA_LIST

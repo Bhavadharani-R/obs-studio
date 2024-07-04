@@ -22,7 +22,7 @@ static inline uint32_t clz32(unsigned long val)
 
 static inline uint32_t ctz32(unsigned long val)
 {
-	return _tzcnt_u32(val);
+	return _CountTrailingZeros(val);
 }
 #else
 static uint32_t popcnt(uint32_t x)

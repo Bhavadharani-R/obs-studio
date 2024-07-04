@@ -24,7 +24,7 @@
 /* -------------------------------------------------------- */
 
 /* clang-format off */
-
+#undef S_THRESHOLD
 #define S_THRESHOLD                     "threshold"
 #define S_RELEASE_TIME                  "release_time"
 

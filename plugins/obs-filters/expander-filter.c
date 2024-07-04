@@ -28,6 +28,7 @@
 /* clang-format off */
 
 #define S_RATIO                         "ratio"
+#undef S_THRESHOLD
 #define S_THRESHOLD                     "threshold"
 #define S_ATTACK_TIME                   "attack_time"
 #define S_RELEASE_TIME                  "release_time"

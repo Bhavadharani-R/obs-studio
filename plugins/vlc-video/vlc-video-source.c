@@ -98,7 +98,7 @@ static inline libvlc_media_t *create_media_from_file(const char *file)
 {
 	return (file && strstr(file, "://") != NULL)
 		       ? libvlc_media_new_location_(libvlc, file)
-		       : libvlc_media_new_path_(libvlc, file);
+		       : libvlc_media_new_path_(file);
 }
 
 static void free_files(media_file_array_t *files)
@@ -346,7 +346,7 @@ static void vlcs_destroy(void *data)
 	struct vlc_source *c = data;
 
 	if (c->media_list_player) {
-		libvlc_media_list_player_stop_(c->media_list_player);
+		libvlc_media_list_player_stop_async_(c->media_list_player);
 		libvlc_media_list_player_release_(c->media_list_player);
 	}
 	if (c->media_player) {
@@ -386,13 +386,12 @@ static void calculate_display_size(struct vlc_source *c, unsigned *width,
 	if (!media)
 		return;
 
-	libvlc_media_track_t **tracks;
-
-	unsigned count = libvlc_media_tracks_get_(media, &tracks);
+	libvlc_media_tracklist_t *tracklist = libvlc_media_get_tracklist_(media, libvlc_track_video); // this will return tracklist
+	unsigned count = libvlc_media_tracklist_count_(tracklist);
 
 	if (count > 0) {
 		for (unsigned i = 0; i < count; i++) {
-			libvlc_media_track_t *track = tracks[i];
+			libvlc_media_track_t *track = libvlc_media_tracklist_at_(tracklist, i);
 
 			if (track->i_type != libvlc_track_video)
 				continue;
@@ -426,9 +425,8 @@ static void calculate_display_size(struct vlc_source *c, unsigned *width,
 				*height = display_height;
 				break;
 			}
+			libvlc_media_track_release_(track);
 		}
-
-		libvlc_media_tracks_release_(tracks, count);
 	}
 
 	libvlc_media_release_(media);
@@ -703,7 +701,7 @@ static void vlcs_update(void *data, obs_data_t *settings)
 	/* ------------------------------------- */
 	/* update settings data */
 
-	libvlc_media_list_player_stop_(c->media_list_player);
+	libvlc_media_list_player_stop_async_(c->media_list_player);
 
 	pthread_mutex_lock(&c->mutex);
 	old_files = c->files;
@@ -765,7 +763,7 @@ static void vlcs_update(void *data, obs_data_t *settings)
 		libvlc_media_list_player_play_(c->media_list_player);
 	else
 		obs_source_output_video(c->source, NULL);
-
+	
 	obs_data_array_release(array);
 }
 
@@ -808,7 +806,7 @@ static enum obs_media_state vlcs_get_state(void *data)
 		return OBS_MEDIA_STATE_PAUSED;
 	case libvlc_Stopped:
 		return OBS_MEDIA_STATE_STOPPED;
-	case libvlc_Ended:
+	case libvlc_Stopping:
 		return OBS_MEDIA_STATE_ENDED;
 	case libvlc_Error:
 		return OBS_MEDIA_STATE_ERROR;
@@ -833,7 +831,7 @@ static void vlcs_restart(void *data)
 {
 	struct vlc_source *c = data;
 
-	libvlc_media_list_player_stop_(c->media_list_player);
+	libvlc_media_list_player_stop_async_(c->media_list_player);
 	libvlc_media_list_player_play_(c->media_list_player);
 }
 
@@ -841,7 +839,7 @@ static void vlcs_stop(void *data)
 {
 	struct vlc_source *c = data;
 
-	libvlc_media_list_player_stop_(c->media_list_player);
+	libvlc_media_list_player_stop_async_(c->media_list_player);
 	obs_source_output_video(c->source, NULL);
 }
 
@@ -1001,7 +999,7 @@ static void *vlcs_create(obs_data_t *settings, obs_source_t *source)
 
 	libvlc_event_manager_t *event_manager;
 	event_manager = libvlc_media_player_event_manager_(c->media_player);
-	libvlc_event_attach_(event_manager, libvlc_MediaPlayerEndReached,
+	libvlc_event_attach_(event_manager, libvlc_MediaPlayerStopping,
 			     vlcs_stopped, c);
 	libvlc_event_attach_(event_manager, libvlc_MediaPlayerOpening,
 			     vlcs_started, c);
@@ -1038,7 +1036,7 @@ static void vlcs_deactivate(void *data)
 	struct vlc_source *c = data;
 
 	if (c->behavior == BEHAVIOR_STOP_RESTART) {
-		libvlc_media_list_player_stop_(c->media_list_player);
+		libvlc_media_list_player_stop_async_(c->media_list_player);
 		obs_source_output_video(c->source, NULL);
 
 	} else if (c->behavior == BEHAVIOR_PAUSE_UNPAUSE) {

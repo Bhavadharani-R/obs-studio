@@ -172,7 +172,7 @@ double TimeDiffMsec(mfxTime tfinish, mfxTime tstart)
 
 void util_cpuid(int cpuinfo[4], int flags)
 {
-	return __cpuid(cpuinfo, flags);
+	//return __cpuid(cpuinfo, flags);
 }
 
 static bool enum_luids(void *param, uint32_t idx, uint64_t luid)
